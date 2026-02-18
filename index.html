@@ -5,8 +5,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DeFi Pro | AMM Simulator</title>
+    
+    <!-- Scripts & Styles -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <script>
       // Process shim for browser environments
       window.process = window.process || { env: {} };
@@ -31,15 +35,13 @@
         }
       }
       
-      // Initialize theme early to prevent flash
+      // Theme initialization
       const savedTheme = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
       }
     </script>
+    
     <style>
       body {
         transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -59,15 +61,17 @@
       }
       .bento-card:hover {
         transform: translateY(-2px);
+        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
       }
     </style>
+
     <script type="importmap">
 {
   "imports": {
-    "recharts": "https://esm.sh/recharts@^3.7.0",
     "react": "https://esm.sh/react@^19.2.4",
     "react-dom": "https://esm.sh/react-dom@^19.2.4",
     "react-dom/client": "https://esm.sh/react-dom@^19.2.4/client",
+    "recharts": "https://esm.sh/recharts@^3.7.0",
     "@google/genai": "https://esm.sh/@google/genai@^1.41.0",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/"
@@ -77,7 +81,8 @@
   </head>
   <body class="bg-apple-gray-light dark:bg-apple-gray-deep text-[#1d1d1f] dark:text-[#f5f5f7] antialiased">
     <div id="root"></div>
-    <!-- Explicit module entry point for Netlify/Production -->
-    <script type="module" src="./index.tsx"></script>
+    
+    <!-- Babel handles the .tsx transpilation for browsers that don't support it natively -->
+    <script type="text/babel" data-type="module" data-presets="typescript,react" src="./index.tsx"></script>
   </body>
 </html>
