@@ -110,27 +110,30 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pb-20 transition-colors duration-300">
-      {/* Navigation Header */}
-      <header className="sticky top-0 z-50 glass-card px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+    <div className="min-h-screen pb-12 selection:bg-blue-100 dark:selection:bg-blue-900/40">
+      {/* Dynamic Navigation Bar */}
+      <header className="sticky top-0 z-[100] glass-card px-8 py-4 flex items-center justify-between shadow-[0_1px_0_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.05)]">
+        <div className="flex items-center gap-4">
+          <div className="w-11 h-11 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center text-white shadow-[0_4px_12px_rgba(59,130,246,0.3)]">
+            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">DeFi Pro</h1>
+          <div>
+            <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white leading-none">DeFi Pro</h1>
+            <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-widest mt-1">AMM Suite v2.0</p>
+          </div>
         </div>
         
-        <div className="flex items-center gap-6">
-          <nav className="hidden md:flex bg-gray-100/50 dark:bg-white/5 p-1 rounded-xl">
+        <div className="flex items-center gap-4">
+          <nav className="hidden sm:flex bg-gray-100/80 dark:bg-white/5 p-1 rounded-[14px]">
             {Object.values(CalculationMode).map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(m)}
-                className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all ${
+                className={`px-5 py-2 text-xs font-semibold rounded-[11px] transition-all duration-300 ${
                   mode === m 
-                    ? 'bg-white dark:bg-white/20 shadow-sm text-blue-600 dark:text-blue-400' 
+                    ? 'bg-white dark:bg-white/10 shadow-sm text-blue-600 dark:text-blue-400' 
                     : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
                 }`}
               >
@@ -139,69 +142,74 @@ const App: React.FC = () => {
             ))}
           </nav>
 
+          <div className="h-6 w-[1px] bg-gray-200 dark:bg-white/10 mx-2"></div>
+
           <button 
             onClick={() => setIsDark(!isDark)}
-            className="p-2 rounded-xl bg-gray-100/50 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 transition-all active:scale-90"
+            aria-label="Toggle Theme"
           >
             {isDark ? (
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" /></svg>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
             ) : (
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" /></svg>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
             )}
           </button>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <main className="max-w-[1400px] mx-auto px-8 mt-10 grid grid-cols-1 lg:grid-cols-12 gap-10">
         
-        {/* Input Sidebar */}
-        <div className="lg:col-span-4 flex flex-col gap-6">
-          <section className="glass-card rounded-3xl p-6 shadow-sm">
-            <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">Initial Pool Parameters</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1">Token A Price (Base)</label>
+        {/* Input Control Section */}
+        <aside className="lg:col-span-4 space-y-6">
+          <section className="glass-card rounded-[32px] p-8 shadow-sm">
+            <h2 className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">Simulation Controls</h2>
+            <div className="space-y-6">
+              <div className="group">
+                <label className="block text-[13px] font-semibold text-gray-600 dark:text-gray-400 mb-2 group-hover:text-blue-500 transition-colors">Token A Base Price</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">$</span>
                   <input 
                     type="number" 
                     value={pool.tokenAPrice}
                     onChange={(e) => setPool({ ...pool, tokenAPrice: Number(e.target.value) })}
-                    className="w-full pl-8 pr-4 py-2 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
+                    className="w-full pl-9 pr-4 py-3 bg-gray-50 dark:bg-white/5 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white font-medium"
                   />
                 </div>
               </div>
+
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1">Reserve A</label>
+                <div className="group">
+                  <label className="block text-[13px] font-semibold text-gray-600 dark:text-gray-400 mb-2 group-hover:text-blue-500">Reserve A</label>
                   <input 
                     type="number" 
                     value={pool.reserveA}
                     onChange={(e) => setPool({ ...pool, reserveA: Number(e.target.value) })}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white font-medium"
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1">Reserve B</label>
+                <div className="group">
+                  <label className="block text-[13px] font-semibold text-gray-600 dark:text-gray-400 mb-2 group-hover:text-blue-500">Reserve B</label>
                   <input 
                     type="number" 
                     value={pool.reserveB}
                     onChange={(e) => setPool({ ...pool, reserveB: Number(e.target.value) })}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white font-medium"
                   />
                 </div>
               </div>
+
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1">Fee Tier</label>
-                <div className="grid grid-cols-2 gap-2">
+                <label className="block text-[13px] font-semibold text-gray-600 dark:text-gray-400 mb-3">Protocol Fee Tier</label>
+                <div className="grid grid-cols-2 gap-3">
                   {FEE_TIERS.map((tier) => (
                     <button
                       key={tier.value}
                       onClick={() => setPool({ ...pool, feeTier: tier.value })}
-                      className={`py-2 text-xs font-medium border rounded-xl transition-all ${
+                      className={`py-3 text-[13px] font-bold rounded-2xl transition-all duration-300 ${
                         pool.feeTier === tier.value 
-                          ? 'bg-blue-600 border-blue-600 text-white shadow-md' 
-                          : 'bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:border-blue-300'
+                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' 
+                          : 'bg-white dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
                       }`}
                     >
                       {tier.label}
@@ -213,138 +221,174 @@ const App: React.FC = () => {
           </section>
 
           {mode === CalculationMode.LIQUIDITY && (
-            <section className="glass-card rounded-3xl p-6 shadow-sm border-blue-100 dark:border-blue-900/30 bg-blue-50/20 dark:bg-blue-900/10">
-              <h2 className="text-sm font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-4">Price Scenario</h2>
-              <div className="space-y-4">
-                <label className="block text-xs font-medium text-gray-400 mb-1">Target Price A ($)</label>
+            <section className="glass-card rounded-[32px] p-8 shadow-sm bg-gradient-to-br from-blue-500/5 to-transparent border-blue-500/10">
+              <h2 className="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-6">Scenario Parameters</h2>
+              <div className="space-y-6">
+                <div className="flex justify-between items-end mb-2">
+                  <label className="text-[13px] font-semibold text-gray-600 dark:text-gray-400">Target Market Price</label>
+                  <span className="text-xl font-black text-gray-900 dark:text-white">${targetPriceA.toLocaleString()}</span>
+                </div>
                 <input 
                   type="range" 
-                  min={pool.tokenAPrice * 0.2}
-                  max={pool.tokenAPrice * 3}
+                  min={pool.tokenAPrice * 0.1}
+                  max={pool.tokenAPrice * 4}
                   step={10}
                   value={targetPriceA}
                   onChange={(e) => setTargetPriceA(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  className="w-full h-1.5 bg-gray-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-blue-600"
                 />
-                <div className="flex justify-between text-lg font-bold">
-                  <span className="text-gray-900 dark:text-white">${targetPriceA.toLocaleString()}</span>
-                  <span className={`${lpResult.priceRatio >= 1 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                    {(lpResult.priceRatio * 100 - 100).toFixed(1)}%
-                  </span>
+                <div className="flex justify-between text-[11px] font-bold text-gray-400 uppercase tracking-tighter">
+                  <span>-90% Bear</span>
+                  <span className="text-blue-500">Current</span>
+                  <span>+300% Bull</span>
                 </div>
               </div>
             </section>
           )}
 
           {mode === CalculationMode.SWAP && (
-            <section className="glass-card rounded-3xl p-6 shadow-sm border-orange-100 dark:border-orange-900/30 bg-orange-50/20 dark:bg-orange-900/10">
-              <h2 className="text-sm font-semibold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-4">Swap Simulation</h2>
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 mb-2">
+            <section className="glass-card rounded-[32px] p-8 shadow-sm bg-gradient-to-br from-orange-500/5 to-transparent border-orange-500/10">
+              <h2 className="text-[11px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-6">Trade Parameters</h2>
+              <div className="space-y-6">
+                <div className="flex p-1 bg-gray-100 dark:bg-white/5 rounded-[14px]">
                   <button 
                     onClick={() => setIsSwapA(true)}
-                    className={`flex-1 py-2 text-xs rounded-lg transition-all ${isSwapA ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400'}`}
+                    className={`flex-1 py-2 text-xs font-bold rounded-[11px] transition-all ${isSwapA ? 'bg-white dark:bg-white/10 shadow-sm text-orange-600' : 'text-gray-500'}`}
                   >
-                    Swap A
+                    Sell Token A
                   </button>
                   <button 
                     onClick={() => setIsSwapA(false)}
-                    className={`flex-1 py-2 text-xs rounded-lg transition-all ${!isSwapA ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400'}`}
+                    className={`flex-1 py-2 text-xs font-bold rounded-[11px] transition-all ${!isSwapA ? 'bg-white dark:bg-white/10 shadow-sm text-orange-600' : 'text-gray-500'}`}
                   >
-                    Swap B
+                    Sell Token B
                   </button>
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1">Amount In</label>
+                <div className="group">
+                  <label className="block text-[13px] font-semibold text-gray-600 dark:text-gray-400 mb-2">Transaction Amount</label>
                   <input 
                     type="number" 
                     value={swapAmount}
                     onChange={(e) => setSwapAmount(Number(e.target.value))}
-                    className="w-full px-4 py-2 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl outline-none dark:text-white"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border-none rounded-2xl outline-none dark:text-white font-medium focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
               </div>
             </section>
           )}
-        </div>
+        </aside>
 
-        {/* Main Content Area */}
-        <div className="lg:col-span-8 space-y-8">
+        {/* Dynamic Display Section */}
+        <div className="lg:col-span-8 space-y-10">
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Bento Summary Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {mode === CalculationMode.LIQUIDITY ? (
               <>
-                <div className="glass-card p-6 rounded-3xl">
-                  <span className="text-xs font-medium text-gray-400 uppercase">Impermanent Loss</span>
-                  <p className={`text-2xl font-bold mt-1 ${lpResult.impermanentLoss < 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white'}`}>
+                <div className="glass-card p-8 rounded-[32px] bento-card">
+                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Exposure Delta</p>
+                  <p className={`text-3xl font-black mt-2 tracking-tight ${lpResult.impermanentLoss < 0 ? 'text-red-500' : 'text-gray-900 dark:text-white'}`}>
                     {(lpResult.impermanentLoss * 100).toFixed(2)}%
                   </p>
+                  <p className="text-[10px] font-medium text-gray-400 mt-1 italic">vs. HODLing 50/50</p>
                 </div>
-                <div className="glass-card p-6 rounded-3xl">
-                  <span className="text-xs font-medium text-gray-400 uppercase">Pool Value (Current)</span>
-                  <p className="text-2xl font-bold mt-1 text-gray-900 dark:text-white">
+                <div className="glass-card p-8 rounded-[32px] bento-card">
+                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Equity Value</p>
+                  <p className="text-3xl font-black mt-2 tracking-tight text-gray-900 dark:text-white">
                     ${lpResult.poolValueCurrent.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </p>
+                  <p className="text-[10px] font-medium text-gray-400 mt-1 italic">Total simulated position</p>
                 </div>
-                <div className="glass-card p-6 rounded-3xl border-green-100 dark:border-green-900/30">
-                  <span className="text-xs font-medium text-gray-400 uppercase">LP vs HODL</span>
-                  <p className={`text-2xl font-bold mt-1 ${lpResult.poolValueCurrent > lpResult.poolValueHODL ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
-                    ${(lpResult.poolValueCurrent - lpResult.poolValueHODL).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                <div className="glass-card p-8 rounded-[32px] bento-card border-green-500/10 bg-green-500/[0.02]">
+                  <p className="text-[11px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest">LP Alpha</p>
+                  <p className={`text-3xl font-black mt-2 tracking-tight ${lpResult.poolValueCurrent > lpResult.poolValueHODL ? 'text-green-600' : 'text-red-500'}`}>
+                    {lpResult.poolValueCurrent > lpResult.poolValueHODL ? '+' : ''}${(lpResult.poolValueCurrent - lpResult.poolValueHODL).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </p>
+                  <p className="text-[10px] font-medium text-gray-400 mt-1 italic">Profitability variance</p>
                 </div>
               </>
-            ) : mode === CalculationMode.SWAP ? (
+            ) : (
               <>
-                <div className="glass-card p-6 rounded-3xl">
-                  <span className="text-xs font-medium text-gray-400 uppercase">Output {isSwapA ? 'B' : 'A'}</span>
-                  <p className="text-2xl font-bold mt-1 text-orange-600 dark:text-orange-400">
+                <div className="glass-card p-8 rounded-[32px] bento-card">
+                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Receiving Amount</p>
+                  <p className="text-3xl font-black mt-2 tracking-tight text-orange-600">
                     {swapResult.outputAmount.toFixed(4)}
                   </p>
+                  <p className="text-[10px] font-medium text-gray-400 mt-1 italic">Estimated post-slippage</p>
                 </div>
-                <div className="glass-card p-6 rounded-3xl">
-                  <span className="text-xs font-medium text-gray-400 uppercase">Price Impact</span>
-                  <p className={`text-2xl font-bold mt-1 ${swapResult.priceImpact > 0.05 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white'}`}>
+                <div className="glass-card p-8 rounded-[32px] bento-card">
+                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Market Impact</p>
+                  <p className={`text-3xl font-black mt-2 tracking-tight ${swapResult.priceImpact > 0.03 ? 'text-red-500' : 'text-gray-900 dark:text-white'}`}>
                     {(swapResult.priceImpact * 100).toFixed(2)}%
                   </p>
+                  <p className="text-[10px] font-medium text-gray-400 mt-1 italic">Liquidity depth strain</p>
                 </div>
-                <div className="glass-card p-6 rounded-3xl">
-                  <span className="text-xs font-medium text-gray-400 uppercase">Fee Accrued</span>
-                  <p className="text-2xl font-bold mt-1 text-gray-900 dark:text-white">
+                <div className="glass-card p-8 rounded-[32px] bento-card">
+                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Protocol Revenue</p>
+                  <p className="text-3xl font-black mt-2 tracking-tight text-gray-900 dark:text-white">
                     ${(swapResult.feePaid * (isSwapA ? pool.tokenAPrice : pool.tokenBPrice)).toFixed(2)}
                   </p>
+                  <p className="text-[10px] font-medium text-gray-400 mt-1 italic">LP fee distribution</p>
                 </div>
               </>
-            ) : null}
+            )}
           </div>
 
-          <div className="glass-card p-8 rounded-[2.5rem] shadow-sm overflow-hidden">
+          {/* Core Visualization / Analysis Area */}
+          <div className="glass-card rounded-[40px] p-10 shadow-xl overflow-hidden min-h-[500px] flex flex-col">
             {mode === CalculationMode.LIQUIDITY && (
               <>
-                <div className="mb-6 flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">Impermanent Loss Curve</h3>
-                  <div className="flex items-center gap-4 text-xs font-medium text-gray-400">
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div> IL %
-                    </div>
+                <div className="mb-10 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Impermanent Loss Sensitivity</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Modeling IL across 20% to 400% price movements</p>
                   </div>
                 </div>
-                <div className="h-[400px] w-full">
+                <div className="flex-1 w-full min-h-[350px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={ilData}>
+                    <AreaChart data={ilData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id="colorIl" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2}/>
                           <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? "#334155" : "#f1f1f1"} />
-                      <XAxis dataKey="ratio" tick={{fontSize: 12}} stroke="#94a3b8" />
-                      <YAxis tick={{fontSize: 12}} stroke="#94a3b8" unit="%" />
-                      <Tooltip 
-                        contentStyle={{ backgroundColor: isDark ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.8)', borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.2)', color: isDark ? '#fff' : '#000' }}
-                        itemStyle={{ color: '#3b82f6' }}
+                      <CartesianGrid strokeDasharray="6 6" vertical={false} stroke={isDark ? "#333" : "#E5E7EB"} />
+                      <XAxis 
+                        dataKey="ratio" 
+                        axisLine={false} 
+                        tickLine={false} 
+                        tick={{fontSize: 10, fill: '#94a3b8', fontWeight: 600}} 
+                        dy={15}
                       />
-                      <Area type="monotone" dataKey="il" stroke="#3b82f6" fillOpacity={1} fill="url(#colorIl)" strokeWidth={3} />
+                      <YAxis 
+                        axisLine={false} 
+                        tickLine={false} 
+                        tick={{fontSize: 10, fill: '#94a3b8', fontWeight: 600}} 
+                        unit="%"
+                        dx={-10}
+                      />
+                      <Tooltip 
+                        cursor={{ stroke: '#3b82f6', strokeWidth: 2, strokeDasharray: '4 4' }}
+                        contentStyle={{ 
+                          backgroundColor: isDark ? '#1C1C1E' : '#FFFFFF', 
+                          borderRadius: '20px', 
+                          border: 'none', 
+                          boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
+                          padding: '16px'
+                        }}
+                        itemStyle={{ color: '#3b82f6', fontWeight: 700 }}
+                        labelStyle={{ color: '#94a3b8', marginBottom: '4px', fontSize: '12px' }}
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="il" 
+                        stroke="#3b82f6" 
+                        fillOpacity={1} 
+                        fill="url(#colorIl)" 
+                        strokeWidth={4} 
+                        animationDuration={1500}
+                      />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -352,16 +396,16 @@ const App: React.FC = () => {
             )}
 
             {mode === CalculationMode.STRATEGY && (
-              <div className="space-y-6">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex-1 flex flex-col">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">AI Strategy Insights</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Gemini-powered risk analysis for your current parameters</p>
+                    <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Quantitative Intelligence</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">AI-driven liquidity provisioning strategy for current pool state</p>
                   </div>
                   <button 
                     onClick={handleAiInsights}
                     disabled={isAnalyzing}
-                    className="apple-button px-6 py-2 bg-blue-600 text-white text-sm font-semibold rounded-2xl shadow-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2 self-start"
+                    className="px-8 py-3 bg-blue-600 text-white text-sm font-bold rounded-[20px] shadow-lg shadow-blue-500/30 hover:bg-blue-700 disabled:opacity-50 flex items-center gap-3 transition-all active:scale-95"
                   >
                     {isAnalyzing && (
                       <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
@@ -369,47 +413,57 @@ const App: React.FC = () => {
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
                     )}
-                    {isAnalyzing ? 'Analyzing...' : 'Generate Report'}
+                    {isAnalyzing ? 'Processing Pool Data...' : 'Generate Risk Analysis'}
                   </button>
                 </div>
 
                 {aiAnalysis ? (
-                  <div className="bg-gray-50 dark:bg-white/5 rounded-3xl p-8 text-gray-700 dark:text-gray-300 leading-relaxed border border-gray-100 dark:border-white/10 prose prose-blue dark:prose-invert max-w-none transition-all">
-                    <div dangerouslySetInnerHTML={{ __html: aiAnalysis.replace(/\n/g, '<br/>') }} />
+                  <div className="flex-1 bg-gray-50 dark:bg-white/5 rounded-[32px] p-10 border border-gray-100 dark:border-white/10 overflow-y-auto">
+                    <div className="prose prose-blue dark:prose-invert max-w-none prose-p:leading-relaxed prose-headings:tracking-tight prose-headings:font-black">
+                      <div dangerouslySetInnerHTML={{ __html: aiAnalysis.replace(/\n/g, '<br/>') }} />
+                    </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-                    <div className="w-16 h-16 bg-gray-100 dark:bg-white/10 rounded-full flex items-center justify-center text-gray-300 dark:text-gray-600">
-                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  <div className="flex-1 flex flex-col items-center justify-center py-20 text-center space-y-6">
+                    <div className="w-24 h-24 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center text-gray-300 dark:text-gray-700">
+                      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     </div>
-                    <p className="text-gray-400 dark:text-gray-500 max-w-xs">Click generate to receive a deep-dive analysis of your current liquidity position.</p>
+                    <div>
+                      <p className="text-xl font-bold text-gray-900 dark:text-white">Strategy Engine Ready</p>
+                      <p className="text-sm text-gray-400 mt-2 max-w-xs mx-auto">Click the button above to analyze your capital efficiency and hedging options.</p>
+                    </div>
                   </div>
                 )}
               </div>
             )}
 
             {mode === CalculationMode.SWAP && (
-              <div className="space-y-6">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Price Impact Analysis</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/10">
-                      <p className="text-xs text-gray-400 font-medium">New Reserve A</p>
-                      <p className="text-xl font-bold dark:text-white">{(isSwapA ? pool.reserveA + swapAmount - swapResult.feePaid : pool.reserveA - swapResult.outputAmount).toFixed(2)}</p>
+              <div className="flex-1 flex flex-col">
+                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-8">Equilibrium Shift</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 flex-1">
+                  <div className="space-y-6">
+                    <div className="p-8 bg-gray-50 dark:bg-white/5 rounded-[32px] border border-gray-100 dark:border-white/10 group">
+                      <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-blue-500 transition-colors">Projected Reserve A</p>
+                      <p className="text-3xl font-black dark:text-white">
+                        {(isSwapA ? pool.reserveA + swapAmount - swapResult.feePaid : pool.reserveA - swapResult.outputAmount).toLocaleString(undefined, { maximumFractionDigits: 4 })}
+                      </p>
                     </div>
-                    <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/10">
-                      <p className="text-xs text-gray-400 font-medium">New Reserve B</p>
-                      <p className="text-xl font-bold dark:text-white">{(isSwapA ? pool.reserveB - swapResult.outputAmount : pool.reserveB + swapAmount - swapResult.feePaid).toFixed(2)}</p>
+                    <div className="p-8 bg-gray-50 dark:bg-white/5 rounded-[32px] border border-gray-100 dark:border-white/10 group">
+                      <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-blue-500 transition-colors">Projected Reserve B</p>
+                      <p className="text-3xl font-black dark:text-white">
+                        {(isSwapA ? pool.reserveB - swapResult.outputAmount : pool.reserveB + swapAmount - swapResult.feePaid).toLocaleString(undefined, { maximumFractionDigits: 4 })}
+                      </p>
                     </div>
                   </div>
-                  <div className="bg-orange-50 dark:bg-orange-900/10 rounded-3xl p-6 flex flex-col justify-center border border-orange-100 dark:border-orange-900/30">
-                    <p className="text-orange-800 dark:text-orange-300 font-semibold mb-2">New Pool Equilibrium</p>
-                    <p className="text-sm text-orange-600 dark:text-orange-400/80 mb-4">The swap shifts the constant product k.</p>
-                    <div className="text-3xl font-bold text-orange-900 dark:text-orange-200">
-                      1 A = {swapResult.newPrice.toFixed(4)} B
+                  <div className="bg-orange-500/5 rounded-[40px] p-10 flex flex-col justify-center border border-orange-500/10 text-center relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[60px] rounded-full"></div>
+                    <p className="text-orange-600 dark:text-orange-400 font-bold uppercase text-[12px] tracking-widest mb-4">Post-Trade Price</p>
+                    <div className="text-5xl font-black text-orange-600 dark:text-orange-400 tracking-tighter mb-4">
+                      {swapResult.newPrice.toFixed(6)}
                     </div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 px-10">Relative token pair price after execution of the current swap simulation.</p>
                   </div>
                 </div>
               </div>
@@ -418,8 +472,13 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      <footer className="max-w-7xl mx-auto px-6 mt-12 text-center">
-        <p className="text-xs text-gray-400 dark:text-gray-500">© 2024 DeFi Pro Simulator. For educational purposes only. Built for rapid AMM experimentation.</p>
+      <footer className="max-w-[1400px] mx-auto px-8 mt-20 flex flex-col sm:flex-row justify-between items-center text-gray-400 dark:text-gray-600 gap-4">
+        <p className="text-[11px] font-bold uppercase tracking-widest">© 2024 DEFI PRO ANALYTICS GROUP</p>
+        <div className="flex gap-8 text-[11px] font-bold uppercase tracking-widest">
+          <a href="#" className="hover:text-blue-500 transition-colors">Protocol Stats</a>
+          <a href="#" className="hover:text-blue-500 transition-colors">Risk Docs</a>
+          <a href="#" className="hover:text-blue-500 transition-colors">Security</a>
+        </div>
       </footer>
     </div>
   );

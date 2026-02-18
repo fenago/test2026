@@ -1,26 +1,40 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DeFi Pro AMM Simulator</title>
+    <title>DeFi Pro | AMM Simulator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
+      // Process shim for browser environments
+      window.process = window.process || { env: {} };
+      
       tailwind.config = {
         darkMode: 'class',
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+              sans: ['Inter', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
             },
+            colors: {
+              apple: {
+                gray: {
+                  light: '#F5F5F7',
+                  dark: '#1C1C1E',
+                  deep: '#000000'
+                }
+              }
+            }
           }
         }
       }
       
-      // Initialize theme to prevent flash
-      if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      // Initialize theme early to prevent flash
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
         document.documentElement.classList.add('dark');
       } else {
         document.documentElement.classList.remove('dark');
@@ -28,52 +42,42 @@
     </script>
     <style>
       body {
-        transition: background-color 0.3s ease, color 0.3s ease;
+        transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
       .glass-card {
-        background: rgba(255, 255, 255, 0.72);
-        backdrop-filter: saturate(180%) blur(20px);
-        -webkit-backdrop-filter: saturate(180%) blur(20px);
-        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(0, 0, 0, 0.05);
       }
       .dark .glass-card {
-        background: rgba(28, 28, 30, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(28, 28, 30, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.05);
       }
-      .apple-button {
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      .bento-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
-      .apple-button:active {
-        transform: scale(0.96);
-      }
-      /* Custom scrollbar for a cleaner look */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: rgba(0,0,0,0.1);
-        border-radius: 10px;
-      }
-      .dark ::-webkit-scrollbar-thumb {
-        background: rgba(255,255,255,0.1);
+      .bento-card:hover {
+        transform: translateY(-2px);
       }
     </style>
-  <script type="importmap">
+    <script type="importmap">
 {
   "imports": {
     "recharts": "https://esm.sh/recharts@^3.7.0",
-    "react/": "https://esm.sh/react@^19.2.4/",
     "react": "https://esm.sh/react@^19.2.4",
+    "react-dom": "https://esm.sh/react-dom@^19.2.4",
+    "react-dom/client": "https://esm.sh/react-dom@^19.2.4/client",
+    "@google/genai": "https://esm.sh/@google/genai@^1.41.0",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.41.0"
+    "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>
-</head>
-  <body class="bg-[#f5f5f7] dark:bg-[#000000] text-[#1d1d1f] dark:text-[#f5f5f7]">
+  </head>
+  <body class="bg-apple-gray-light dark:bg-apple-gray-deep text-[#1d1d1f] dark:text-[#f5f5f7] antialiased">
     <div id="root"></div>
+    <!-- Explicit module entry point for Netlify/Production -->
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>
