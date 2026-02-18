@@ -1,88 +1,405 @@
 
 <!DOCTYPE html>
-<html lang="en" class="light">
-  <head>
+<html lang="en">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DeFi Pro | AMM Simulator</title>
+    <title>DeFi Pro | AMM Suite</title>
     
-    <!-- Scripts & Styles -->
+    <!-- Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.3.1",
+        "react-dom": "https://esm.sh/react-dom@18.3.1",
+        "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+        "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom",
+        "@google/genai": "https://esm.sh/@google/genai@0.1.1"
+      }
+    }
+    </script>
+
     <script>
-      // Process shim for browser environments
-      window.process = window.process || { env: {} };
+      // Global Environment Setup
+      window.process = { env: { API_KEY: "" } };
       
       tailwind.config = {
         darkMode: 'class',
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-            },
-            colors: {
-              apple: {
-                gray: {
-                  light: '#F5F5F7',
-                  dark: '#1C1C1E',
-                  deep: '#000000'
-                }
-              }
+              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
             }
           }
         }
       }
-      
-      // Theme initialization
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-      }
+
+      // Fast Theme Engine
+      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.classList.toggle('dark', theme === 'dark');
     </script>
-    
+
     <style>
-      body {
-        transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      :root { --apple-blue: #007AFF; --apple-gray: #F5F5F7; }
+      body { transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1); margin: 0; }
+      .glass { 
+        background: rgba(255, 255, 255, 0.7); 
+        backdrop-filter: blur(30px) saturate(180%); 
+        -webkit-backdrop-filter: blur(30px) saturate(180%);
+        border-bottom: 1px solid rgba(0,0,0,0.05);
       }
-      .glass-card {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        border: 1px solid rgba(0, 0, 0, 0.05);
-      }
-      .dark .glass-card {
-        background: rgba(28, 28, 30, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+      .dark .glass { 
+        background: rgba(28, 28, 30, 0.75); 
+        border-bottom: 1px solid rgba(255,255,255,0.05);
       }
       .bento-card {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background: white;
+        border-radius: 32px;
+        transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        border: 1px solid rgba(0,0,0,0.02);
       }
-      .bento-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+      .dark .bento-card {
+        background: #1C1C1E;
+        border: 1px solid rgba(255,255,255,0.03);
       }
+      .bento-card:hover { transform: scale(1.01) translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1); }
+      .input-field {
+        background: #F2F2F7;
+        border-radius: 16px;
+        border: 2px solid transparent;
+        transition: all 0.2s ease;
+      }
+      .dark .input-field { background: #2C2C2E; color: white; }
+      .input-field:focus { border-color: var(--apple-blue); background: white; }
+      .dark .input-field:focus { background: #3A3A3C; }
+      
+      /* Recharts Custom Styling */
+      .recharts-cartesian-grid-horizontal line, .recharts-cartesian-grid-vertical line { stroke: rgba(0,0,0,0.05); }
+      .dark .recharts-cartesian-grid-horizontal line, .dark .recharts-cartesian-grid-vertical line { stroke: rgba(255,255,255,0.05); }
+      
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
     </style>
-
-    <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom": "https://esm.sh/react-dom@^19.2.4",
-    "react-dom/client": "https://esm.sh/react-dom@^19.2.4/client",
-    "recharts": "https://esm.sh/recharts@^3.7.0",
-    "@google/genai": "https://esm.sh/@google/genai@^1.41.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "react/": "https://esm.sh/react@^19.2.4/"
-  }
-}
-</script>
-  </head>
-  <body class="bg-apple-gray-light dark:bg-apple-gray-deep text-[#1d1d1f] dark:text-[#f5f5f7] antialiased">
+</head>
+<body class="bg-[#F5F5F7] dark:bg-black text-[#1D1D1F] dark:text-[#F5F5F7] antialiased">
     <div id="root"></div>
-    
-    <!-- Babel handles the .tsx transpilation for browsers that don't support it natively -->
-    <script type="text/babel" data-type="module" data-presets="typescript,react" src="./index.tsx"></script>
-  </body>
+
+    <script type="text/babel" data-type="module" data-presets="typescript,react">
+    import React, { useState, useMemo, useEffect } from 'react';
+    import ReactDOM from 'react-dom/client';
+    import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+    import { GoogleGenAI } from "@google/genai";
+
+    const FEE_TIERS = [
+      { label: '0.01%', value: 0.0001 },
+      { label: '0.05%', value: 0.0005 },
+      { label: '0.3%', value: 0.003 },
+      { label: '1%', value: 0.01 },
+    ];
+
+    const INITIAL_STATE = {
+      tokenAPrice: 2600,
+      tokenBPrice: 1,
+      reserveA: 10,
+      reserveB: 26000,
+      feeTier: 0.003,
+    };
+
+    const App = () => {
+      const [pool, setPool] = useState(INITIAL_STATE);
+      const [mode, setMode] = useState('LIQUIDITY');
+      const [targetPrice, setTargetPrice] = useState(INITIAL_STATE.tokenAPrice);
+      const [swapAmount, setSwapAmount] = useState(1);
+      const [isSwapA, setIsSwapA] = useState(true);
+      const [aiReport, setAiReport] = useState('');
+      const [isBusy, setIsBusy] = useState(false);
+      const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
+
+      const toggleTheme = () => {
+        const next = !isDark;
+        setIsDark(next);
+        document.documentElement.classList.toggle('dark', next);
+        localStorage.setItem('theme', next ? 'dark' : 'light');
+      };
+
+      // AMM Logic
+      const lpResult = useMemo(() => {
+        const k = pool.reserveA * pool.reserveB;
+        const newReserveA = Math.sqrt(k / (pool.tokenBPrice / targetPrice));
+        const newReserveB = k / newReserveA;
+        
+        const currentVal = (newReserveA * targetPrice) + (newReserveB * pool.tokenBPrice);
+        const hodlVal = (pool.reserveA * targetPrice) + (pool.reserveB * pool.tokenBPrice);
+        const il = (currentVal / hodlVal) - 1;
+
+        return { il, currentVal, hodlVal, diff: currentVal - hodlVal };
+      }, [pool, targetPrice]);
+
+      const swapResult = useMemo(() => {
+        const k = pool.reserveA * pool.reserveB;
+        const fee = swapAmount * pool.feeTier;
+        const netIn = swapAmount - fee;
+        
+        let out, impact, nextPrice;
+        if (isSwapA) {
+          const nextA = pool.reserveA + netIn;
+          const nextB = k / nextA;
+          out = pool.reserveB - nextB;
+          nextPrice = nextB / nextA;
+        } else {
+          const nextB = pool.reserveB + netIn;
+          const nextA = k / nextB;
+          out = pool.reserveA - nextA;
+          nextPrice = nextB / nextA;
+        }
+        
+        const initialPrice = pool.reserveB / pool.reserveA;
+        impact = Math.abs((out / swapAmount) / initialPrice - 1);
+        
+        return { out, impact, nextPrice, feeUSD: fee * (isSwapA ? pool.tokenAPrice : pool.tokenBPrice) };
+      }, [pool, swapAmount, isSwapA]);
+
+      const chartData = useMemo(() => {
+        const pts = [];
+        for (let i = 0.5; i <= 2.0; i += 0.05) {
+          const p = pool.tokenAPrice * i;
+          const k = pool.reserveA * pool.reserveB;
+          const nA = Math.sqrt(k / p);
+          const nB = k / nA;
+          const cV = (nA * p) + nB;
+          const hV = (pool.reserveA * p) + pool.reserveB;
+          pts.push({ ratio: `${Math.round(i * 100)}%`, il: parseFloat(((cV / hV - 1) * 100).toFixed(2)) });
+        }
+        return pts;
+      }, [pool]);
+
+      const getAIInsights = async () => {
+        setIsBusy(true);
+        // Only run if API Key is present to avoid errors, or handle gracefully
+        if (!process.env.API_KEY) {
+            setAiReport("API Key missing. Please configure environment.");
+            setIsBusy(false);
+            return;
+        }
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const prompt = `DeFi Strategy Analysis:
+        Pool: ETH/USDC at $${pool.tokenAPrice}.
+        Simulation: Price shifted to $${targetPrice} (${((targetPrice/pool.tokenAPrice-1)*100).toFixed(1)}%).
+        IL: ${(lpResult.il * 100).toFixed(2)}%.
+        Action: Provide a sharp, professional market report with 3 bullet points: Risk, Efficiency, and Recommendation. Use Markdown.`;
+
+        try {
+          const res = await ai.models.generateContent({
+            model: 'gemini-3-flash-preview',
+            contents: prompt
+          });
+          setAiReport(res.text);
+        } catch (e) {
+          console.error(e);
+          setAiReport("Unable to sync with intelligence engine.");
+        } finally {
+          setIsBusy(false);
+        }
+      };
+
+      return (
+        <div className="min-h-screen">
+          <nav className="glass sticky top-0 z-50 px-8 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-[#007AFF] rounded-[12px] flex items-center justify-center text-white shadow-lg">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+              </div>
+              <h1 className="text-xl font-extrabold tracking-tight">AMM <span className="text-[#007AFF]">PRO</span></h1>
+            </div>
+
+            <div className="flex items-center gap-2 bg-[#F2F2F7] dark:bg-[#1C1C1E] p-1 rounded-[14px]">
+              {['LIQUIDITY', 'SWAP', 'STRATEGY'].map(m => (
+                <button 
+                  key={m} 
+                  onClick={() => setMode(m)}
+                  className={`px-4 py-1.5 text-[12px] font-bold rounded-[11px] transition-all ${mode === m ? 'bg-white dark:bg-[#3A3A3C] shadow-sm text-[#007AFF]' : 'text-gray-400 hover:text-gray-600'}`}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
+
+            <button onClick={toggleTheme} className="w-10 h-10 rounded-full bg-[#F2F2F7] dark:bg-[#1C1C1E] flex items-center justify-center text-gray-500 hover:scale-110 active:scale-95 transition-all">
+              {isDark ? '☀️' : '🌙'}
+            </button>
+          </nav>
+
+          <main className="max-w-[1200px] mx-auto px-8 mt-12 grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <section className="lg:col-span-4 space-y-8">
+              <div className="bento-card p-8">
+                <h3 className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-6">Pool Configuration</h3>
+                <div className="space-y-5">
+                  <div>
+                    <label className="text-[12px] font-bold text-gray-400 block mb-2 uppercase">Base Price</label>
+                    <input type="number" value={pool.tokenAPrice} onChange={e => setPool({...pool, tokenAPrice: Number(e.target.value)})} className="input-field w-full px-4 py-3 font-bold" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-[12px] font-bold text-gray-400 block mb-2 uppercase">Reserve A</label>
+                      <input type="number" value={pool.reserveA} onChange={e => setPool({...pool, reserveA: Number(e.target.value)})} className="input-field w-full px-4 py-3 font-bold" />
+                    </div>
+                    <div>
+                      <label className="text-[12px] font-bold text-gray-400 block mb-2 uppercase">Reserve B</label>
+                      <input type="number" value={pool.reserveB} onChange={e => setPool({...pool, reserveB: Number(e.target.value)})} className="input-field w-full px-4 py-3 font-bold" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[12px] font-bold text-gray-400 block mb-3 uppercase">Fee Tier</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {FEE_TIERS.map(t => (
+                        <button key={t.value} onClick={() => setPool({...pool, feeTier: t.value})} className={`py-2 text-[11px] font-black rounded-lg transition-all ${pool.feeTier === t.value ? 'bg-[#007AFF] text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-500'}`}>
+                          {t.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {mode === 'LIQUIDITY' && (
+                <div className="bento-card p-8 bg-blue-500/[0.03]">
+                  <div className="flex justify-between items-end mb-4">
+                    <span className="text-[11px] font-black text-blue-500 uppercase">Target Price</span>
+                    <span className="text-xl font-black">${targetPrice.toLocaleString()}</span>
+                  </div>
+                  <input type="range" min={pool.tokenAPrice * 0.2} max={pool.tokenAPrice * 3} value={targetPrice} onChange={e => setTargetPrice(Number(e.target.value))} className="w-full accent-[#007AFF]" />
+                </div>
+              )}
+
+              {mode === 'SWAP' && (
+                <div className="bento-card p-8 bg-orange-500/[0.03]">
+                  <div className="flex p-1 bg-gray-100 dark:bg-white/5 rounded-xl mb-4">
+                    <button onClick={() => setIsSwapA(true)} className={`flex-1 py-1.5 text-[11px] font-bold rounded-lg ${isSwapA ? 'bg-white dark:bg-white/10 text-orange-600 shadow-sm' : 'text-gray-400'}`}>Sell A</button>
+                    <button onClick={() => setIsSwapA(false)} className={`flex-1 py-1.5 text-[11px] font-bold rounded-lg ${!isSwapA ? 'bg-white dark:bg-white/10 text-orange-600 shadow-sm' : 'text-gray-400'}`}>Sell B</button>
+                  </div>
+                  <label className="text-[11px] font-black text-gray-400 block mb-2 uppercase">Amount</label>
+                  <input type="number" value={swapAmount} onChange={e => setSwapAmount(Number(e.target.value))} className="input-field w-full px-4 py-3 font-black text-2xl text-orange-600" />
+                </div>
+              )}
+            </section>
+
+            <section className="lg:col-span-8 space-y-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bento-card p-8">
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Exposure</p>
+                  <p className={`text-3xl font-black tracking-tight ${lpResult.il < 0 ? 'text-red-500' : 'text-green-500'}`}>
+                    {(lpResult.il * 100).toFixed(2)}%
+                  </p>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Impermanent Loss</p>
+                </div>
+                <div className="bento-card p-8">
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Position</p>
+                  <p className="text-3xl font-black tracking-tight text-gray-900 dark:text-white">
+                    ${lpResult.currentVal.toLocaleString(undefined, {maximumFractionDigits: 0})}
+                  </p>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Equity Value</p>
+                </div>
+                <div className="bento-card p-8 bg-green-500/[0.05]">
+                  <p className="text-[10px] font-black text-green-600 uppercase tracking-widest mb-1">Alpha</p>
+                  <p className={`text-3xl font-black tracking-tight ${lpResult.diff >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                    ${Math.abs(lpResult.diff).toLocaleString(undefined, {maximumFractionDigits: 0})}
+                  </p>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">vs Buy & Hold</p>
+                </div>
+              </div>
+
+              <div className="bento-card p-10 min-h-[500px] flex flex-col shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[100px] rounded-full -mr-32 -mt-32"></div>
+                
+                {mode === 'LIQUIDITY' && (
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-black tracking-tighter mb-8">Volatility Sensitivity</h2>
+                    <div className="h-[350px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={chartData}>
+                          <defs><linearGradient id="clr" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#007AFF" stopOpacity={0.2}/><stop offset="95%" stopColor="#007AFF" stopOpacity={0}/></linearGradient></defs>
+                          <CartesianGrid vertical={false} strokeDasharray="5 5" />
+                          <XAxis dataKey="ratio" tick={{fontSize: 10, fill: '#94a3b8'}} axisLine={false} tickLine={false} />
+                          <YAxis unit="%" tick={{fontSize: 10, fill: '#94a3b8'}} axisLine={false} tickLine={false} />
+                          <Tooltip contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 10px 40px rgba(0,0,0,0.1)'}} />
+                          <Area type="monotone" dataKey="il" stroke="#007AFF" strokeWidth={4} fill="url(#clr)" animationDuration={1000} />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
+
+                {mode === 'SWAP' && (
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-black tracking-tighter mb-8">Swap Dynamics</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="p-8 bg-gray-50 dark:bg-white/5 rounded-[32px]">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Price Impact</p>
+                        <p className={`text-5xl font-black tracking-tighter ${swapResult.impact > 0.05 ? 'text-red-500' : 'text-[#007AFF]'}`}>
+                          {(swapResult.impact * 100).toFixed(4)}%
+                        </p>
+                      </div>
+                      <div className="p-8 bg-[#007AFF] rounded-[32px] text-white shadow-xl">
+                        <p className="text-[10px] font-black uppercase tracking-widest mb-2 opacity-70">Execution Rate</p>
+                        <p className="text-4xl font-black tracking-tighter">{swapResult.nextPrice.toFixed(6)}</p>
+                        <p className="text-[11px] font-bold mt-2 opacity-70">Projected post-trade price</p>
+                      </div>
+                    </div>
+                    <div className="mt-8 p-6 bg-orange-500/5 border border-orange-500/10 rounded-2xl flex items-center justify-between">
+                      <span className="text-xs font-bold text-orange-600 uppercase">LP Revenue Potential</span>
+                      <span className="text-lg font-black text-orange-600">${swapResult.feeUSD.toFixed(2)}</span>
+                    </div>
+                  </div>
+                )}
+
+                {mode === 'STRATEGY' && (
+                  <div className="flex-1 flex flex-col">
+                    <div className="flex justify-between items-center mb-8">
+                      <h2 className="text-2xl font-black tracking-tighter">Yield Intelligence</h2>
+                      <button 
+                        onClick={getAIInsights} 
+                        disabled={isBusy}
+                        className="px-6 py-2 bg-[#007AFF] text-white rounded-full font-black text-xs shadow-lg hover:scale-105 active:scale-95 disabled:opacity-50 transition-all"
+                      >
+                        {isBusy ? 'CONSULTING...' : 'RUN STRATEGY SIM'}
+                      </button>
+                    </div>
+                    {aiReport ? (
+                      <div className="p-8 bg-gray-50 dark:bg-white/5 rounded-[32px] overflow-auto max-h-[400px]">
+                        <div className="prose prose-blue dark:prose-invert max-w-none text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: aiReport.replace(/\n/g, '<br/>') }} />
+                      </div>
+                    ) : (
+                      <div className="flex-1 flex flex-col items-center justify-center opacity-30 text-center">
+                        <div className="w-20 h-20 mb-6 bg-gray-200 dark:bg-white/10 rounded-full flex items-center justify-center">
+                          <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        </div>
+                        <p className="font-bold max-w-xs">Leverage Gemini Pro to analyze current pool efficiency and IL risks.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </section>
+          </main>
+
+          <footer className="max-w-[1200px] mx-auto px-8 py-20 flex justify-between items-center opacity-30 text-[10px] font-black uppercase tracking-[0.3em]">
+            <span>&copy; 2024 DEFI PRO LABS</span>
+            <div className="flex gap-10">
+              <a href="#">Security</a>
+              <a href="#">Governance</a>
+            </div>
+          </footer>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+    </script>
+</body>
 </html>
